@@ -5,6 +5,7 @@ import models.Equipo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EquipoMysqlDAO implements DAO<Equipo> {
 
@@ -32,14 +33,14 @@ public class EquipoMysqlDAO implements DAO<Equipo> {
     }
 
     @Override
-    public Equipo find(Long id) {
+    public Optional<Equipo> find(Long id) {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(SQL_FIND)) {
 
             stmt.setLong(1, id);
 
             try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next() ? mapRow(rs) : null;
+                return rs.next() ? Optional.of(mapRow(rs)) : Optional.empty();
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error al buscar el equipo con id " + id, e);

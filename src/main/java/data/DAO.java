@@ -1,9 +1,10 @@
 package data;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DAO<T> {
-    T find(Long id);
+    Optional<T> find(Long id);
     List<T> findAll();
     T save(T entity);
     public void update(T entity);

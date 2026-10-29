@@ -3,6 +3,7 @@ import data.EquipoMysqlDAO;
 import models.Equipo;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Main {
 
@@ -19,7 +20,7 @@ public class Main {
 
         // 2. FIND
         System.out.println("\n=== FIND ===");
-        Equipo encontrado = dao.find(id);
+        Optional<Equipo> encontrado = dao.find(id);
         System.out.println("Encontrado: " + encontrado);
 
         // 3. FIND ALL
@@ -29,15 +30,15 @@ public class Main {
 
         // 4. UPDATE
         System.out.println("\n=== UPDATE ===");
-        encontrado.setDisponible(false);
-        encontrado.setCategoria("Aventura");
-        dao.update(encontrado);
+        encontrado.get().setDisponible(false);
+        encontrado.get().setCategoria("Aventura");
+        dao.update(encontrado.get());
         System.out.println("Tras actualizar: " + dao.find(id));
 
         // 5. DELETE
         System.out.println("\n=== DELETE ===");
         dao.delete(id);
-        Equipo borrado = dao.find(id);
+        Optional<Equipo> borrado = dao.find(id);
         System.out.println(borrado == null
                 ? "Equipo con id " + id + " eliminado correctamente."
                 : "ERROR: el equipo sigue existiendo: " + borrado);
