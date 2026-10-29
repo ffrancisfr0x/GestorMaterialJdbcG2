@@ -18,6 +18,8 @@ public class EquipoMysqlDAO implements DAO<Equipo> {
     private static final String SQL_INSERT = "insert into equipo (nombre, categoria, disponible) values (?, ?, ?)";
     private static final String SQL_UPDATE = "update equipo set nombre = ?, categoria = ?, disponible = ? where id = ?";
     private static final String SQL_DELETE = "delete from equipo where id = ?";
+    private static final String SQL_FIND_BY_NAME = "select * from equipo where nombre = ?";
+    private static final String SQL_FIND_BY_CATEGORIA = "select * from equipo where categoria = ?";
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PWD);
@@ -109,6 +111,34 @@ public class EquipoMysqlDAO implements DAO<Equipo> {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error al eliminar el equipo con id " + id, e);
+        }
+    }
+
+    public Optional<Equipo> findByName(String nombre) {
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SQL_FIND_BY_NAME)) {
+
+            stmt.setString(1, nombre);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() ? Optional.of(mapRow(rs)) : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar el equipo por nombre " + nombre, e);
+        }
+    }
+
+    public Optional<Equipo> findByCategoria(String categoria) {
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(SQL_FIND_BY_CATEGORIA)) {
+
+            stmt.setString(1, categoria);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next() ? Optional.of(mapRow(rs)) : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error al buscar el equipo por categoría " + categoria, e);
         }
     }
 }
